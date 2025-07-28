@@ -1,0 +1,9 @@
+[project]
+name = "proj1"
+version = "0.1.0"
+description = "EDA Personal Project 1 - in jupyter notebook"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "polars>=1.31.0",
+]

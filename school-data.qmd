@@ -1,0 +1,98 @@
+---
+title: "Schoo Data"
+format: html
+---
+
+## Setup and Libraries
+
+```{python}
+import polars as pl
+import numpy as np  # noqa: F401
+import plotly.express as px  # noqa: F401
+import plotly.graph_objects as go
+import plotly.io as pio
+import plotly.offline as po
+pio.renderers.default='notebook'
+po.init_notebook_mode(connected=True) 
+```
+
+```{python}
+stu_math = pl.read_csv("student-mat.csv", has_header=True)
+stu_por = pl.read_csv('student-por.csv', has_header=True)
+print(stu_math.head(5))
+print(stu_por.head(5))
+```
+
+```{python}
+by_school = stu_math.group_by('school').agg(
+    pl.col("school").count().alias('count_school')
+)
+
+print(by_school)
+```
+
+```{python}
+by_sex = stu_math.group_by("sex").agg(
+    pl.col("sex").count().alias('count')
+)
+
+print(by_sex)
+```
+
+```{python}
+fig1 = go.Figure()
+
+fig1.add_trace(go.Bar(
+    x = by_school['school'],
+    y = by_school['count_school'],
+    width = 0.4
+))
+
+fig1.update_layout(
+    title_text = 'Number of Students by School',
+    xaxis_title = 'School',
+    yaxis_title = 'Count',
+    width = 500,
+    height = 500,
+    template = 'plotly_white'
+)
+
+fig1.show()
+```
+
+```{python}
+fig2 = go.Figure()
+
+fig2.add_trace(go.Bar(
+    x = by_sex['sex'],
+    y = by_sex['count'],
+    width = .4
+))
+
+fig2.update_layout(
+    title_text = 'Number of Students by Sex',
+    xaxis_title = 'Sex',
+    yaxis_title = 'Count',
+    width = 650,
+    height = 650,
+    template = 'plotly_dark'
+)
+
+fig2.show()
+```
+
+```{python}
+fig_age = go.Figure()
+
+fig_age.add_trace(go.Scatter(
+    x = stu_math['age'],
+    y = stu_math['studytime']
+))
+
+fig_age.update_layout(
+    width = 650,
+    height = 650,
+)
+
+fig_age.show()
+```
